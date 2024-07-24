@@ -9,6 +9,9 @@ import logging
 app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
+# File paths
+output_file_path = 'rating.xlsx'
+
 def wait_for_element(selector, timeout=10):
     start_time = time.time()
     while time.time() - start_time < timeout:
@@ -33,6 +36,8 @@ def get_movie_details(movie_name, director_name, retries=3):
             listings = soup.find_all('div', {'data-listing': ''})
 
             details = {
+                'movie_name': movie_name,
+                'director_name': director_name,
                 'classification': 'N/A',
                 'release_year': 'N/A',
                 'run_time': 'N/A',
@@ -79,6 +84,16 @@ def get_movie_details(movie_name, director_name, retries=3):
                         details['release_year'] = parts[0].strip()
 
                     break
+
+            if not found:
+                details = {
+                    'movie_name': movie_name,
+                    'director_name': director_name,
+                    'classification': 'N/A',
+                    'release_year': 'N/A',
+                    'run_time': 'N/A',
+                    'label_issued_by': 'N/A'
+                }
 
             browser.quit()
             return details
@@ -210,8 +225,12 @@ def upload_file():
     try:
         file = request.files['file']
         if file.filename.endswith('.xlsx'):
+            # Save the uploaded file temporarily
+            temp_file_path = 'temp_upload.xlsx'
+            file.save(temp_file_path)
+            
             # Process the Excel file
-            df = pd.read_excel(file)
+            df = pd.read_excel(temp_file_path)
             movie_names = df['Movie_name'].tolist()
             director_names = df['Director_name'].tolist()
 
@@ -223,6 +242,8 @@ def upload_file():
                     results.append(movie_details)
                 else:
                     results.append({
+                        'movie_name': movie_name,
+                        'director_name': director_name,
                         'classification': 'N/A',
                         'release_year': 'N/A',
                         'run_time': 'N/A',
@@ -231,31 +252,31 @@ def upload_file():
 
             results_df = pd.DataFrame(results)
             not_found = results_df[results_df['classification'] == 'N/A']
-            not_found_list = not_found.index.tolist()
+            not_found_list = not_found['movie_name'].tolist()
 
             # Process with scrapper 2 for those not found in scrapper 1
-            additional_results = nz_title_check(df.loc[not_found_list, 'Movie_name'].tolist())
+            additional_results = nz_title_check(not_found_list)
 
-            # Update the main DataFrame with additional results
+            # Append additional results to the main results
             for i, row in not_found.iterrows():
-                additional_result = next((item for item in additional_results if item['title_name'] == row['Movie_name']), None)
+                additional_result = next((item for item in additional_results if item['title_name'] == row['movie_name']), None)
                 if additional_result:
-                    df.loc[not_found_list[i], 'Classification'] = additional_result['classification']
-                    df.loc[not_found_list[i], 'Run_time'] = additional_result['runtime']
-                    df.loc[not_found_list[i], 'Label_issued_by'] = 'N/A'  # Placeholder for scrapper 2, modify as needed
+                    results_df.loc[i, 'classification'] = additional_result['classification']
+                    results_df.loc[i, 'run_time'] = additional_result['runtime']
+                    results_df.loc[i, 'label_issued_by'] = 'N/A'  # Placeholder for scrapper 2, modify as needed
 
-            # Save the updated DataFrame back to the input Excel file
-            input_file_path = '/mnt/data/NZ - 450 OFLC check (1).xlsx'
-            df.to_excel(input_file_path, index=False)
+            # Save the combined results to the original file
+            results_df.to_excel(temp_file_path, index=False)
 
+            # Provide the updated file for download
             logging.info(f"Processed {len(movie_names)} movies. Found details for {len(results_df) - len(not_found)} movies.")
-            return jsonify({'download_url': f'/download/{input_file_path}'})
+            return jsonify({'download_url': f'/download/{temp_file_path}'})
         else:
             return jsonify({'error': 'Invalid file format, must be .xlsx'}), 400
     except Exception as e:
         logging.error(f"Error processing file: {e}")
-        return jsonify({'error': str(e)}), 500
-
+        return jsonify({'error': str(e)}), 500   
+    
 @app.route('/download/<filename>')
 def download_file(filename):
     return send_file(filename, as_attachment=True)
