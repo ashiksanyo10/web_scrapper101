@@ -61,7 +61,7 @@ def upload_file():
                 
                 # Map MR statement to code
                 mr_statement = details.get('MR', 'N/A')
-                details['CD'] = mr_mapping.get(mr_statement, 'N/A')
+                details['MR'] = mr_mapping.get(mr_statement, mr_statement)  # Convert MR to code, if possible
 
                 results.append(details)
 
