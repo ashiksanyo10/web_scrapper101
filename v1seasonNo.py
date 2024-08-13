@@ -252,6 +252,10 @@ def upload_file():
         if file.filename.endswith('.xlsx'):
             # Process the Excel file
             df = pd.read_excel(file)
+
+            # Convert all columns to strings to handle NaN values
+            df = df.astype(str)
+
             season_names = df['Season_name'].tolist()
             season_numbers = df['Season_number'].tolist()
             episode_numbers = df['Episode_number'].tolist()
@@ -279,7 +283,7 @@ def upload_file():
             for season_name, season_number, episode_number, episode_name, director_name in zip(season_names, season_numbers, episode_numbers, episode_names, director_names):
                 
                 # Handle missing Season_name or Director_name
-                if not season_name:
+                if not season_name.strip():  # Check for empty strings after conversion
                     results.append({
                         'season_name': 'No Season Name',
                         'episode_name': episode_name,
@@ -294,7 +298,7 @@ def upload_file():
                     })
                     continue
 
-                if not is_valid_director_name(director_name):
+                if not is_valid_director_name(director_name.strip()):  # Check for empty strings after conversion
                     results.append({
                         'season_name': season_name,
                         'episode_name': episode_name,
@@ -350,6 +354,7 @@ def upload_file():
     except Exception as e:
         logging.error(f"Error processing upload: {e}")
         return jsonify({'error': 'An error occurred while processing the file. Please try again.'})
+
 
 @app.route('/download/<filename>', methods=['GET'])
 def download_file(filename):
