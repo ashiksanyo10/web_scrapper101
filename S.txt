@@ -1,0 +1,92 @@
+Sure! Below is the **SBI Report** (Situation, Behavior, and Impact) along with an explanation of the code in **layman terms** and **Privacy & Ethics Documentation** for your project. 
+
+### **SBI Report**
+
+#### **Situation:**
+In the New Zealand marketplace, when checking if movies are listed on the regulatory movie classification website, the process is manual. Each movie search requires a person to:
+1. Open the website.
+2. Search for the movie.
+3. Manually check the details like director, classification, runtime, etc.
+This process typically takes 10 to 12 minutes per movie.
+
+When the task is performed by a whole team, this becomes a time-consuming and repetitive job, resulting in inefficiency. The manual effort not only takes up valuable time but also can introduce errors due to human fatigue or inconsistency. 
+
+#### **Behavior:**
+To address this issue, I developed a **web scraper** using **Flask**, **Helium**, **BeautifulSoup**, and **Pandas** to automate the process of checking movie details on the NZ regulatory website. Here’s how the scraper works:
+- A user uploads an Excel file with a list of movie names.
+- The scraper searches for each movie on the NZ classification website.
+- It automatically extracts the **movie title**, **director**, **classification**, and **runtime**.
+- The extracted data is saved into a new Excel file, which can be downloaded for further use.
+- The tool is designed to be **user-friendly**, with clear instructions on how to use it.
+
+This eliminates the need for manual work, reduces the time per movie from 10-12 minutes to about 90-100 seconds, and minimizes the risk of human error.
+
+#### **Impact:**
+The impact of this solution is significant:
+1. **Time-Saving**: The automation reduces the time taken to check each movie, allowing the team to process large volumes of movies much faster. What took several hours or days can now be done in a fraction of the time.
+2. **Accuracy**: By reducing human intervention, the scraper ensures consistent and accurate extraction of data from the website.
+3. **Efficiency**: The tool boosts productivity, allowing the team to focus on other important tasks rather than repetitive and time-consuming manual searches.
+4. **User-Friendly**: The easy-to-use interface ensures that even non-technical users can easily operate the tool, making it accessible for everyone.
+
+---
+
+### **Explanation of Code in Layman Terms**
+
+Here’s an explanation of the code in simple terms, so that even a non-technical person can understand:
+
+| **Code Section**          | **Explanation in Layman Terms**                                                                                                                                           |
+|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Flask Web Framework**    | Flask is used to create a simple website where you can upload a file with movie names. This website is the tool that lets you interact with the movie searcher (scraper). |
+| **Movie Search**           | The code automatically searches for a movie on the NZ classification website. It types the movie name into the search bar and clicks the search button, just like a person would do. |
+| **Helium (Browser Automation)** | The code acts like a person using a browser. It opens the website, types in the movie name, and clicks buttons to find the movie details. It's like having a virtual assistant do this for you. |
+| **BeautifulSoup (HTML Parsing)**  | After finding the movie page, the code looks through the web page (just like reading a webpage or a book) to find specific information like the title, director, rating, and runtime of the movie. |
+| **Pandas & Excel File**    | The code reads the movie names from the Excel file you upload, searches for the movies, and then writes the movie details into a new Excel file. You can then download the file and use it as needed. |
+| **Wait for Elements**      | This part of the code waits for the web page to load fully before moving forward. It's like waiting for the page to finish loading when you're browsing on the internet. |
+| **Batch Processing**       | The code processes movies in small groups to avoid overwhelming the website. After checking a few movies, it takes a short break, just like how a person might take a rest during work. |
+| **User-Friendly Interface**| The website has simple instructions to guide you on how to use it. You just upload your movie list, and the scraper does the rest automatically. |
+| **Downloadable Excel File**| Once all the movie details are collected, the code creates a file that you can download. This file contains all the necessary information about the movies, such as their classification and runtime. |
+
+---
+
+### **Privacy and Ethics Documentation**
+
+#### **1. Data Privacy and Security:**
+
+- **Confidentiality**: The code does not store or share any user data. It processes the data temporarily and deletes it once the task is completed. The only data stored is the **movie names** (uploaded by the user) and the **scraped movie details** (which are processed and saved in the Excel file).
+- **Data Minimization**: The code only extracts the essential information needed for the project (i.e., **title**, **director**, **classification**, **runtime**) and does not collect any personally identifiable information or sensitive data.
+- **Secure File Upload**: The file upload functionality ensures that the uploaded file is only used for the movie name processing and will not be accessed or shared elsewhere. The data entered by the user is not stored permanently, ensuring privacy.
+- **No Tracking**: The tool does not track the users or collect any data about their actions or searches. It focuses solely on processing the movie names provided by the user.
+
+#### **2. Ethical Considerations:**
+
+- **Respect for Intellectual Property**: The scraper only collects publicly available information from the official NZ classification website. It respects the intellectual property rights of the website owners and does not scrape content that is protected or proprietary.
+- **Fair Use**: The data is collected for internal use or analysis and is not shared or used commercially, ensuring that it complies with the principle of **fair use**.
+- **Transparency**: The code provides clear instructions on how to use the tool, and users are informed that their uploaded files will only be used for the purpose of scraping movie details. There are no hidden processes or unethical data use.
+- **Non-Discriminatory**: The code works uniformly for all movies listed on the NZ classification website and does not prioritize or discriminate against any particular movie. It ensures equal processing for every movie, based on the uploaded list.
+
+#### **3. Compliance with Regulations:**
+- The scraper adheres to basic principles of **ethical web scraping**, ensuring that it does not violate the terms of service or policies of the target website (NZ movie classification website). It only automates tasks that are publicly available and accessible without engaging in any unlawful activities.
+
+---
+
+### **Complete Report Summary**
+
+#### **Project Overview:**
+The project automates the process of checking movie ratings, classifications, and other details from the New Zealand regulatory website. By using a web scraper, this project helps save time, reduces errors, and improves efficiency by processing large volumes of data quickly.
+
+#### **Technology Used:**
+- **Flask**: For creating a simple web interface.
+- **Helium**: For automating the browsing and search process.
+- **BeautifulSoup**: For extracting the movie details from the website.
+- **Pandas**: For handling the input/output data in Excel files.
+
+#### **Key Benefits:**
+- **Efficiency**: Reduces time spent per movie from 10-12 minutes to about 90-100 seconds.
+- **User-Friendliness**: A simple web interface allows easy interaction with the scraper.
+- **Accuracy**: Minimizes human error by automating repetitive tasks.
+- **Data Organization**: Outputs detailed movie information in an Excel file for easy access and further analysis.
+
+#### **Privacy and Ethics:**
+The tool is designed with strong privacy practices. It processes the user-uploaded data, extracts necessary information, and provides the results in a secure manner. It also follows ethical guidelines, ensuring fairness and transparency in its operations.
+
+This report highlights how the tool improves efficiency, simplifies a time-consuming task, and ensures that privacy and ethical standards are met.
