@@ -1,0 +1,31 @@
+Section	Explanation
+Libraries and Setup	The script imports several libraries to handle various tasks:
+- Flask: Used to create a web server and manage requests.
+- time: For managing time delays to ensure the script does not overload the target website.
+- logging: Provides detailed logs for debugging and monitoring the execution of the script.
+- helium: A Python library that controls a web browser (Chrome) for automation tasks like clicking buttons and filling forms.
+- BeautifulSoup: Used to parse HTML and extract useful data from web pages.
+- pandas: Handles the structured data and is used to write the data to an Excel file.
+- openpyxl: Allows reading and writing to Excel files.
+File Paths	The variable output_file_path specifies the location where the final Excel file with the scraped data will be saved. Here, it is set to rating.xlsx.
+wait_for_element() Function	This helper function checks whether a specified element (like a button or text box) is present on the web page within a given time frame. It continuously checks every 0.5 seconds for up to 10 seconds before timing out.
+nz_title_check() Function	This function is the core of the scraping process. It does the following steps for each movie in the input list:
+- Launches a browser session using the helium library to interact with the New Zealand Film and Video Label (NZFVL) website.
+- It searches for each movie title, first trying an exact match and then a broader search if needed.
+- If a match is found, it navigates to the movie's page and extracts details like the movie title, director, classification, and runtime using BeautifulSoup.
+- If the movie details are found, it stores the data; if not, it stores "N/A" (Not Available).
+- The process is repeated for every movie in the input list, and the function finally returns all the collected details in a structured list.
+Scraping Process	- Search for Movie: For each movie name, the function fills in a search box and clicks the search button on the website. It waits for the page to load and checks if results are found.
+- Extract Data: Once the correct movie page is found, BeautifulSoup extracts the movie's details such as title, classification, runtime, and director.
+- Fallback Strategy: If no exact match is found, the function tries a partial search by matching the movie name with available results. If no match is found after all attempts, the script saves "N/A" for that movie's details.
+Data Structure and Return	After extracting the details for each movie, a dictionary is created for each movie containing the movie title, director name, classification, and runtime. These dictionaries are added to a list called all_movies_details. This list is returned when the function completes its execution.
+Flask Web Application Setup	The Flask web framework is used to create a simple web server with the following endpoints:
+- Index Route (/): Displays the index20.html page, which is the main user interface of the app.
+- Upload Route (/upload): Accepts an uploaded Excel file containing a list of movie names. It reads the file, extracts the movie names, and calls the nz_title_check() function to scrape the movie details. The scraped data is then saved in an Excel file (rating.xlsx) and a download link is provided to the user.
+- Process Route (/process): Accepts a JSON request containing a list of movie names. It runs the nz_title_check() function to scrape data and returns the download link for the results.
+- Download Route (/download): Allows users to download the scraped data as an Excel file.
+Excel File Creation	After the movie details are scraped, the pandas library is used to convert the list of dictionaries into a structured table (called a DataFrame). This DataFrame is saved as an Excel file (rating.xlsx) with movie details such as title, director, classification, and runtime.
+Error Handling	The script contains error handling to catch any exceptions during the execution of the scraping or file processing steps. If an error occurs, a message with the error details is returned to the user.
+Browser Automation	The script uses the helium library to automate the Chrome browser for searching and interacting with the website. This includes actions like entering text into search boxes, clicking buttons, navigating to movie pages, and extracting data from HTML elements.
+Logging	The logging library provides detailed logs during the execution of the program, which helps with debugging. For instance, when the script reaches certain milestones (like after every 10 movies), it logs a message to indicate progress. This helps to keep track of the program’s state.
+Time Delay Between Searches	The time.sleep() function is used to insert delays between various actions, such as after submitting a search query and before extracting data. This is done to avoid overwhelming the target website and to mimic human interaction with the site.
